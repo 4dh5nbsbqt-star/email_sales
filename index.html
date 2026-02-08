@@ -8,8 +8,8 @@
     button { margin: 5px 0; padding: 10px 20px; font-size: 16px; }
     .form-group { margin-bottom: 10px; }
     label { display: block; margin-bottom: 3px; font-weight: bold; }
-    input, textarea { width: 100%; padding: 8px; font-size: 14px; }
-    #emailForm { display: none; margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+    input { width: 100%; padding: 8px; font-size: 14px; }
+    #placesForm { display: none; margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
   </style>
 </head>
 <body>
@@ -18,11 +18,11 @@
   <button id="findPlacesBtn">Find Places</button>
   <button id="findEmailsBtn">Find Emails</button>
   
-  <div id="emailForm">
-    <h2>Find Emails Form</h2>
+  <div id="placesForm">
+    <h2>Find Places Form</h2>
     <div class="form-group">
-      <label for="query">Query (e.g., Zahnarzt, Einsiedeln, Schweiz)</label>
-      <input type="text" id="query" placeholder="Query" required>
+      <label for="query">Query</label>
+      <input type="text" id="query" placeholder="Zahnarzt, Einsiedeln, Schweiz" required>
     </div>
     <div class="form-group">
       <label for="cities">Cities (comma-separated)</label>
@@ -34,40 +34,47 @@
     </div>
     <div class="form-group">
       <label for="limit">Limit per city</label>
-      <input type="number" id="limit" placeholder="20" value="20" required>
+      <input type="number" id="limit" value="20" required>
     </div>
     <div class="form-group">
       <label for="language">Language</label>
-      <input type="text" id="language" placeholder="de" value="de" required>
+      <input type="text" id="language" value="de" required>
     </div>
-    <button id="submitEmailForm">Submit</button>
+    <button id="submitPlacesForm">Submit</button>
   </div>
 
   <script>
     const findPlacesBtn = document.getElementById('findPlacesBtn');
     const findEmailsBtn = document.getElementById('findEmailsBtn');
-    const emailForm = document.getElementById('emailForm');
-    const submitEmailForm = document.getElementById('submitEmailForm');
+    const placesForm = document.getElementById('placesForm');
+    const submitPlacesForm = document.getElementById('submitPlacesForm');
 
-    // Replace these with your n8n Cloud webhook URLs
+    // Replace these with your actual n8n Cloud webhook URLs
     const findPlacesWebhook = 'https://crazywebsiteselling.app.n8n.cloud/webhook-test/outscraper-lead-pipeline';
     const findEmailsWebhook = 'https://crazywebsiteselling.app.n8n.cloud/webhook-test/trigger-swiss-lead-sync';
 
-    findPlacesBtn.onclick = async () => {
+    // Show/hide the Find Places form
+    findPlacesBtn.onclick = () => {
+      placesForm.style.display = placesForm.style.display === 'none' ? 'block' : 'none';
+    };
+
+    // Find Emails button (just triggers workflow with fixed payload)
+    findEmailsBtn.onclick = async () => {
       try {
-        const res = await fetch(findPlacesWebhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'manual_trigger' }) });
-        if (res.ok) alert('Find Places workflow triggered!');
+        const res = await fetch(findEmailsWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'manual_trigger' })
+        });
+        if (res.ok) alert('Find Emails workflow triggered!');
         else alert('Failed to trigger workflow.');
       } catch (e) {
         alert('Error: ' + e);
       }
     };
 
-    findEmailsBtn.onclick = () => {
-      emailForm.style.display = emailForm.style.display === 'none' ? 'block' : 'none';
-    };
-
-    submitEmailForm.onclick = async () => {
+    // Submit Find Places form
+    submitPlacesForm.onclick = async () => {
       const payload = {
         query: document.getElementById('query').value,
         cities: document.getElementById('cities').value,
@@ -77,8 +84,12 @@
       };
 
       try {
-        const res = await fetch(findEmailsWebhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (res.ok) alert('Find Emails workflow triggered!');
+        const res = await fetch(findPlacesWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) alert('Find Places workflow triggered!');
         else alert('Failed to trigger workflow.');
       } catch (e) {
         alert('Error: ' + e);
