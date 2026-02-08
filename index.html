@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Swiss Lead Finder</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    h1 { color: #2c3e50; }
+    button { margin: 5px 0; padding: 10px 20px; font-size: 16px; }
+    .form-group { margin-bottom: 10px; }
+    label { display: block; margin-bottom: 3px; font-weight: bold; }
+    input, textarea { width: 100%; padding: 8px; font-size: 14px; }
+    #emailForm { display: none; margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Swiss Lead Finder</h1>
+  
+  <button id="findPlacesBtn">Find Places</button>
+  <button id="findEmailsBtn">Find Emails</button>
+  
+  <div id="emailForm">
+    <h2>Find Emails Form</h2>
+    <div class="form-group">
+      <label for="query">Query (e.g., Zahnarzt, Einsiedeln, Schweiz)</label>
+      <input type="text" id="query" placeholder="Query" required>
+    </div>
+    <div class="form-group">
+      <label for="cities">Cities (comma-separated)</label>
+      <input type="text" id="cities" placeholder="Einsiedeln, Schwyz, Brunnen" required>
+    </div>
+    <div class="form-group">
+      <label for="apiKey">Outscraper API Key</label>
+      <input type="text" id="apiKey" placeholder="YOUR_KEY_HERE" required>
+    </div>
+    <div class="form-group">
+      <label for="limit">Limit per city</label>
+      <input type="number" id="limit" placeholder="20" value="20" required>
+    </div>
+    <div class="form-group">
+      <label for="language">Language</label>
+      <input type="text" id="language" placeholder="de" value="de" required>
+    </div>
+    <button id="submitEmailForm">Submit</button>
+  </div>
+
+  <script>
+    const findPlacesBtn = document.getElementById('findPlacesBtn');
+    const findEmailsBtn = document.getElementById('findEmailsBtn');
+    const emailForm = document.getElementById('emailForm');
+    const submitEmailForm = document.getElementById('submitEmailForm');
+
+    // Replace these with your n8n Cloud webhook URLs
+    const findPlacesWebhook = 'https://crazywebsiteselling.app.n8n.cloud/webhook-test/outscraper-lead-pipeline';
+    const findEmailsWebhook = 'https://crazywebsiteselling.app.n8n.cloud/webhook-test/trigger-swiss-lead-sync';
+
+    findPlacesBtn.onclick = async () => {
+      try {
+        const res = await fetch(findPlacesWebhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'manual_trigger' }) });
+        if (res.ok) alert('Find Places workflow triggered!');
+        else alert('Failed to trigger workflow.');
+      } catch (e) {
+        alert('Error: ' + e);
+      }
+    };
+
+    findEmailsBtn.onclick = () => {
+      emailForm.style.display = emailForm.style.display === 'none' ? 'block' : 'none';
+    };
+
+    submitEmailForm.onclick = async () => {
+      const payload = {
+        query: document.getElementById('query').value,
+        cities: document.getElementById('cities').value,
+        outscraper_api_key: document.getElementById('apiKey').value,
+        limit_per_city: parseInt(document.getElementById('limit').value),
+        language: document.getElementById('language').value
+      };
+
+      try {
+        const res = await fetch(findEmailsWebhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (res.ok) alert('Find Emails workflow triggered!');
+        else alert('Failed to trigger workflow.');
+      } catch (e) {
+        alert('Error: ' + e);
+      }
+    };
+  </script>
+</body>
+</html>
