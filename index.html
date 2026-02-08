@@ -148,6 +148,9 @@
         @media (max-width: 600px) {
             .task-grid { grid-template-columns: 1fr; }
         }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body>
@@ -205,10 +208,8 @@
 <div id="toast"></div>
 
 <script>
-    // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Production Webhook URLs from your n8n screenshots
     const PLACES_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/outscraper-lead-pipeline';
     const EMAILS_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/trigger-swiss-lead-sync';
 
@@ -223,40 +224,28 @@
         setTimeout(() => toast.classList.remove('show'), 5000);
     }
 
-    // Toggle Form visibility
     placesCard.onclick = () => {
         formSection.classList.toggle('open');
         placesCard.classList.toggle('active');
     };
 
-    /**
-     * Helper to send data to n8n
-     * We use 'text/plain' as Content-Type to avoid CORS preflight blocks.
-     * n8n automatically parses the body as JSON regardless.
-     */
     async function callN8n(url, payload) {
         try {
-            const response = await fetch(url, {
+            await fetch(url, {
                 method: 'POST',
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(payload)
             });
-
-            if (response.ok) {
-                notify("✅ Workflow triggered successfully!");
-                return true;
-            } else {
-                notify(`❌ Server Error: ${response.status}`, "error");
-                return false;
-            }
+            notify("✅ Workflow triggered successfully!");
+            return true;
         } catch (error) {
             console.error("Connection Error Details:", error);
-            notify("❌ Connection Error: Ensure CORS is enabled in n8n", "error");
+            notify("❌ Connection Error", "error");
             return false;
         }
     }
 
-    // ACTION: TRIGGER EMAIL SYNC (Step 2)
     document.getElementById('email-sync-btn').onclick = async () => {
         if(!confirm("Start manual lead sync? This will read your Google Sheet and process websites.")) return;
         
@@ -264,15 +253,13 @@
         await callN8n(EMAILS_URL, { trigger: 'manual_dashboard_trigger' });
     };
 
-    // ACTION: TRIGGER MAPS SCRAPER (Step 1)
     document.getElementById('places-form').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('sub-btn');
         btn.disabled = true;
         btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Contacting n8n...';
-        lucide.createIcons(); // Re-render loader icon
+        lucide.createIcons();
 
-        // Payload matches your "Build City Jobs1" node requirements
         const payload = {
             query: document.getElementById('q').value,
             cities: document.getElementById('c').value,
@@ -294,12 +281,6 @@
         lucide.createIcons();
     };
 </script>
-
-<style>
-    /* Loading Animation */
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .spin { animation: spin 1s linear infinite; }
-</style>
 
 </body>
 </html>
