@@ -7,30 +7,147 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --swiss-red: #D52B1E; --slate-900: #0f172a; --slate-100: #f1f5f9; }
+        :root { 
+            --swiss-red: #D52B1E; 
+            --slate-900: #0f172a; 
+            --slate-100: #f1f5f9; 
+            --slate-400: #94a3b8;
+            --emerald: #10b981;
+        }
+        
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .dashboard { width: 100%; max-width: 800px; background: white; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 40px; position: relative; border-top: 6px solid var(--swiss-red); }
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { margin: 0; font-size: 2rem; color: var(--slate-900); }
-        header p { color: #64748b; margin-top: 5px; }
-        .task-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .card { background: var(--slate-100); padding: 20px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
-        .card:hover, .card.active { border-color: var(--swiss-red); background: white; transform: translateY(-3px); }
-        .icon { background: var(--swiss-red); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        .card h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
-        .card p { margin: 0; font-size: 0.85rem; color: #64748b; }
-        #form-section { max-height: 0; overflow: hidden; transition: 0.5s ease-in-out; opacity: 0; }
-        #form-section.open { max-height: 800px; opacity: 1; padding: 25px; background: var(--slate-100); border-radius: 12px; margin-top: 10px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; }
+        
+        body { 
+            background: #f8fafc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        
+        .dashboard { 
+            width: 100%; 
+            max-width: 800px; 
+            background: white; 
+            border-radius: 24px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); 
+            padding: 40px; 
+            position: relative; 
+            border-top: 8px solid var(--swiss-red); 
+        }
+        
+        header { text-align: center; margin-bottom: 40px; }
+        header h1 { font-weight: 800; font-size: 2.2rem; color: var(--slate-900); margin: 0; }
+        header p { color: var(--slate-400); margin-top: 8px; font-size: 1.1rem; }
+        
+        .task-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        
+        .card { 
+            background: var(--slate-100); 
+            padding: 24px; 
+            border-radius: 16px; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            text-align: center;
+        }
+        
+        .card:hover { transform: translateY(-5px); background: white; border-color: var(--swiss-red); }
+        .card.active { border-color: var(--swiss-red); background: white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        
+        .icon { 
+            background: var(--swiss-red); 
+            color: white; 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0 auto 16px auto; 
+        }
+        
+        .card h3 { margin: 0 0 8px 0; font-size: 1.25rem; color: var(--slate-900); }
+        .card p { margin: 0; font-size: 0.9rem; color: var(--slate-400); line-height: 1.4; }
+        
+        #form-section { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: all 0.5s ease-in-out; 
+            opacity: 0; 
+        }
+        
+        #form-section.open { 
+            max-height: 1000px; 
+            opacity: 1; 
+            padding: 30px; 
+            background: var(--slate-100); 
+            border-radius: 16px; 
+            margin-top: 20px; 
+        }
+        
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--slate-900); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 10px; 
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        
         input:focus { outline: none; border-color: var(--swiss-red); box-shadow: 0 0 0 3px rgba(213, 43, 30, 0.1); }
-        .btn-run { width: 100%; background: var(--swiss-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .btn-run:hover { background: #a91f16; }
-        .btn-run:disabled { background: #94a3b8; cursor: wait; }
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); padding: 14px 28px; border-radius: 50px; color: white; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-weight: 600; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 1000; }
+        
+        .btn-run { 
+            width: 100%; 
+            background: var(--swiss-red); 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            cursor: pointer; 
+            margin-top: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px;
+            transition: opacity 0.2s;
+        }
+        
+        .btn-run:hover { opacity: 0.9; }
+        .btn-run:disabled { background: var(--slate-400); cursor: not-allowed; }
+        
+        #toast { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(100px); 
+            padding: 16px 32px; 
+            border-radius: 50px; 
+            color: white; 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            font-weight: 600; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); 
+            text-align: center; 
+            z-index: 9999;
+        }
+        
         #toast.show { transform: translateX(-50%) translateY(0); }
+        
+        @media (max-width: 600px) {
+            .task-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -45,28 +162,28 @@
         <div class="card" id="places-card">
             <div class="icon"><i data-lucide="map-pin"></i></div>
             <h3>1. Find Places</h3>
-            <p>Pull business data from Google Maps</p>
+            <p>Trigger Outscraper extraction for new cities</p>
         </div>
         <div class="card" id="email-sync-btn">
-            <div class="icon"><i data-lucide="refresh-ccw"></i></div>
+            <div class="icon"><i data-lucide="refresh-cw"></i></div>
             <h3>2. Sync Emails</h3>
-            <p>Run the manual email enrichment</p>
+            <p>Process websites and find contact info</p>
         </div>
     </div>
 
     <div id="form-section">
         <form id="places-form">
             <div class="input-group">
-                <label>Natural Language Query</label>
-                <input type="text" id="q" placeholder="Zahnarzt, Einsiedeln, Schweiz" required>
+                <label>Business Type / Query</label>
+                <input type="text" id="q" placeholder="e.g. Zahnarzt" required>
             </div>
             <div class="input-group">
-                <label>Target Cities (Comma Separated)</label>
+                <label>Cities (Comma Separated)</label>
                 <input type="text" id="c" placeholder="Einsiedeln, Schwyz, Brunnen" required>
             </div>
             <div class="input-group">
                 <label>Outscraper API Key</label>
-                <input type="password" id="k" placeholder="Enter your key" required>
+                <input type="password" id="k" placeholder="Enter your key here" required>
             </div>
             <div style="display:flex; gap:15px">
                 <div class="input-group" style="flex:1">
@@ -74,12 +191,12 @@
                     <input type="number" id="l" value="20">
                 </div>
                 <div class="input-group" style="flex:1">
-                    <label>Language Code</label>
+                    <label>Language</label>
                     <input type="text" id="lang" value="de">
                 </div>
             </div>
             <button type="submit" class="btn-run" id="sub-btn">
-                <i data-lucide="send"></i> Dispatch Search
+                <i data-lucide="zap"></i> Start Extraction
             </button>
         </form>
     </div>
@@ -88,10 +205,10 @@
 <div id="toast"></div>
 
 <script>
-    // Initialize Icons
+    // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Endpoints
+    // Production Webhook URLs from your n8n screenshots
     const PLACES_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/outscraper-lead-pipeline';
     const EMAILS_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/trigger-swiss-lead-sync';
 
@@ -103,47 +220,59 @@
         toast.innerText = message;
         toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 4000);
+        setTimeout(() => toast.classList.remove('show'), 5000);
     }
 
-    // Toggle Form
+    // Toggle Form visibility
     placesCard.onclick = () => {
         formSection.classList.toggle('open');
         placesCard.classList.toggle('active');
     };
 
-    // ACTION 2: EMAIL SYNC
-    document.getElementById('email-sync-btn').onclick = async () => {
-        if(!confirm("Execute manual email enrichment sync?")) return;
-        
-        notify("Contacting n8n...");
+    /**
+     * Helper to send data to n8n
+     * We use 'text/plain' as Content-Type to avoid CORS preflight blocks.
+     * n8n automatically parses the body as JSON regardless.
+     */
+    async function callN8n(url, payload) {
         try {
-            const response = await fetch(EMAILS_URL, {
+            const response = await fetch(url, {
                 method: 'POST',
-                // Mode 'no-cors' is a last-resort if CORS is not set in n8n, 
-                // but 'cors' is preferred for proper status reporting.
-                mode: 'cors', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ action: 'manual_sync_trigger', date: new Date().toISOString() })
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(payload)
             });
-            
-            if(response.ok) {
-                notify("✅ Enrichment Started!");
+
+            if (response.ok) {
+                notify("✅ Workflow triggered successfully!");
+                return true;
             } else {
-                notify("❌ Server Error: Check n8n CORS settings", "error");
+                notify(`❌ Server Error: ${response.status}`, "error");
+                return false;
             }
-        } catch(e) {
-            console.error(e);
-            notify("❌ Connection Error: Check CORS in n8n", "error");
+        } catch (error) {
+            console.error("Connection Error Details:", error);
+            notify("❌ Connection Error: Ensure CORS is enabled in n8n", "error");
+            return false;
         }
+    }
+
+    // ACTION: TRIGGER EMAIL SYNC (Step 2)
+    document.getElementById('email-sync-btn').onclick = async () => {
+        if(!confirm("Start manual lead sync? This will read your Google Sheet and process websites.")) return;
+        
+        notify("Triggering Email Sync...");
+        await callN8n(EMAILS_URL, { trigger: 'manual_dashboard_trigger' });
     };
 
-    // ACTION 1: PLACES FORM
+    // ACTION: TRIGGER MAPS SCRAPER (Step 1)
     document.getElementById('places-form').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('sub-btn');
-        
-        // Prepare Payload
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Contacting n8n...';
+        lucide.createIcons(); // Re-render loader icon
+
+        // Payload matches your "Build City Jobs1" node requirements
         const payload = {
             query: document.getElementById('q').value,
             cities: document.getElementById('c').value,
@@ -152,38 +281,22 @@
             language: document.getElementById('lang').value
         };
 
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Processing...';
+        const success = await callN8n(PLACES_URL, payload);
         
-        try {
-            const response = await fetch(PLACES_URL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
-            });
-
-            if(response.ok) {
-                notify("🚀 Maps Extraction Triggered!");
-                document.getElementById('places-form').reset();
-                formSection.classList.remove('open');
-                placesCard.classList.remove('active');
-            } else {
-                notify("❌ Workflow Error: Check n8n logs", "error");
-            }
-        } catch(e) {
-            console.error(e);
-            notify("❌ Connection Error: Is CORS enabled?", "error");
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="send"></i> Dispatch Search';
-            lucide.createIcons();
+        if (success) {
+            document.getElementById('places-form').reset();
+            formSection.classList.remove('open');
+            placesCard.classList.remove('active');
         }
+        
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="zap"></i> Start Extraction';
+        lucide.createIcons();
     };
 </script>
 
 <style>
-    /* Utility for the loading spinner */
+    /* Loading Animation */
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .spin { animation: spin 1s linear infinite; }
 </style>
