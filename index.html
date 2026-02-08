@@ -1,100 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Swiss Lead Finder</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    h1 { color: #2c3e50; }
-    button { margin: 5px 0; padding: 10px 20px; font-size: 16px; }
-    .form-group { margin-bottom: 10px; }
-    label { display: block; margin-bottom: 3px; font-weight: bold; }
-    input { width: 100%; padding: 8px; font-size: 14px; }
-    #placesForm { display: none; margin-top: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiss Lead Finder | Dashboard</title>
+    <style>
+        :root {
+            --primary: #d52b1e; /* Swiss Red */
+            --primary-hover: #a91f16;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --border: #dfe6e9;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 40px 20px; 
+            max-width: 800px; 
+            margin: auto; 
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 { text-align: center; margin-bottom: 30px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
+        
+        .action-group { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center;
+            margin-bottom: 30px; 
+        }
+
+        button { 
+            cursor: pointer;
+            padding: 12px 24px; 
+            font-size: 16px; 
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        .btn-solid { background: var(--primary); color: white; }
+        .btn-solid:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-solid:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Form Styling */
+        #placesForm { 
+            display: none; 
+            margin-top: 20px; 
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            font-size: 14px; 
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-sizing: border-box; /* Important for width */
+        }
+
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(213, 43, 30, 0.1); }
+
+        .status-msg {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Swiss Lead Finder</h1>
-  
-  <button id="findPlacesBtn">Find Places</button>
-  <button id="findEmailsBtn">Find Emails</button>
-  
-  <div id="placesForm">
-    <h2>Find Places Form</h2>
-    <div class="form-group">
-      <label for="query">Query</label>
-      <input type="text" id="query" placeholder="Zahnarzt, Einsiedeln, Schweiz" required>
-    </div>
-    <div class="form-group">
-      <label for="cities">Cities (comma-separated)</label>
-      <input type="text" id="cities" placeholder="Einsiedeln, Schwyz, Brunnen" required>
-    </div>
-    <div class="form-group">
-      <label for="apiKey">Outscraper API Key</label>
-      <input type="text" id="apiKey" placeholder="YOUR_KEY_HERE" required>
-    </div>
-    <div class="form-group">
-      <label for="limit">Limit per city</label>
-      <input type="number" id="limit" value="20" required>
-    </div>
-    <div class="form-group">
-      <label for="language">Language</label>
-      <input type="text" id="language" value="de" required>
-    </div>
-    <button id="submitPlacesForm">Submit</button>
-  </div>
 
-  <script>
+<div class="container">
+    <h1>🇨🇭 Swiss Lead Finder</h1>
+    
+    <div class="action-group">
+        <button id="findPlacesBtn" class="btn-outline">1. Find Places (Form)</button>
+        <button id="findEmailsBtn" class="btn-solid">2. Find Emails (Sync)</button>
+    </div>
+
+    <div id="statusBox" class="status-msg"></div>
+
+    <form id="placesForm">
+        <h3 style="margin-top:0">Search Google Maps via Outscraper</h3>
+        
+        <div class="form-group">
+            <label for="query">Search Query</label>
+            <input type="text" id="query" value="Zahnarzt, Einsiedeln, Schweiz" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="cities">Target Cities (comma-separated)</label>
+            <input type="text" id="cities" value="Einsiedeln, Schwyz, Brunnen, Küssnacht, Goldau, Arth" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="apiKey">Outscraper API Key</label>
+            <input type="password" id="apiKey" placeholder="Enter your key" required>
+        </div>
+        
+        <div style="display: flex; gap: 15px;">
+            <div class="form-group" style="flex: 1;">
+                <label for="limit">Limit per City</label>
+                <input type="number" id="limit" value="20" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="language">Language</label>
+                <input type="text" id="language" value="de" required>
+            </div>
+        </div>
+
+        <button type="submit" id="submitPlacesForm" class="btn-solid" style="width:100%; margin-top:10px;">Run Search Now</button>
+    </form>
+</div>
+
+<script>
+    // CONFIGURATION: Replace these with your actual n8n PRODUCTION Webhook URLs
+    const FIND_PLACES_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/outscraper-lead-pipeline';
+    const FIND_EMAILS_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/trigger-swiss-lead-sync';
+
     const findPlacesBtn = document.getElementById('findPlacesBtn');
     const findEmailsBtn = document.getElementById('findEmailsBtn');
     const placesForm = document.getElementById('placesForm');
-    const submitPlacesForm = document.getElementById('submitPlacesForm');
+    const statusBox = document.getElementById('statusBox');
 
-    // Replace these with your actual n8n Cloud webhook URLs
-    const findPlacesWebhook = 'https://crazywebsiteselling.app.n8n.cloud/webhook-test/outscraper-lead-pipeline';
-    const findEmailsWebhook = 'https://crazywebsiteselling.app.n8n.cloud/webhook-test/trigger-swiss-lead-sync';
+    function showStatus(msg, isError = false) {
+        statusBox.innerText = msg;
+        statusBox.style.display = 'block';
+        statusBox.style.backgroundColor = isError ? '#ffeef0' : '#e6fffa';
+        statusBox.style.color = isError ? '#d52b1e' : '#2d3748';
+    }
 
-    // Show/hide the Find Places form
+    // Toggle Form Visibility
     findPlacesBtn.onclick = () => {
-      placesForm.style.display = placesForm.style.display === 'none' ? 'block' : 'none';
+        placesForm.style.display = (placesForm.style.display === 'none' || placesForm.style.display === '') ? 'block' : 'none';
     };
 
-    // Find Emails button (just triggers workflow with fixed payload)
+    // Action 1: Submit Places Form
+    placesForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitPlacesForm');
+        
+        const payload = {
+            query: document.getElementById('query').value,
+            cities: document.getElementById('cities').value,
+            outscraper_api_key: document.getElementById('apiKey').value,
+            limit_per_city: parseInt(document.getElementById('limit').value),
+            language: document.getElementById('language').value
+        };
+
+        btn.disabled = true;
+        btn.innerText = 'Processing...';
+        showStatus('Sending request to n8n...');
+
+        try {
+            const res = await fetch(FIND_PLACES_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (res.ok) {
+                showStatus('✅ Success: Search workflow triggered!');
+                placesForm.reset();
+            } else {
+                showStatus('❌ Error: n8n returned an error. Check CORS settings.', true);
+            }
+        } catch (err) {
+            showStatus('❌ Connection Error: ' + err.message, true);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Run Search Now';
+        }
+    };
+
+    // Action 2: Manual Email Sync
     findEmailsBtn.onclick = async () => {
-      try {
-        const res = await fetch(findEmailsWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'manual_trigger' })
-        });
-        if (res.ok) alert('Find Emails workflow triggered!');
-        else alert('Failed to trigger workflow.');
-      } catch (e) {
-        alert('Error: ' + e);
-      }
-    };
+        if(!confirm('Start Email Sync? This triggers the manual workflow.')) return;
 
-    // Submit Find Places form
-    submitPlacesForm.onclick = async () => {
-      const payload = {
-        query: document.getElementById('query').value,
-        cities: document.getElementById('cities').value,
-        outscraper_api_key: document.getElementById('apiKey').value,
-        limit_per_city: parseInt(document.getElementById('limit').value),
-        language: document.getElementById('language').value
-      };
+        findEmailsBtn.disabled = true;
+        findEmailsBtn.innerText = 'Syncing...';
+        showStatus('Triggering manual email sync...');
 
-      try {
-        const res = await fetch(findPlacesWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) alert('Find Places workflow triggered!');
-        else alert('Failed to trigger workflow.');
-      } catch (e) {
-        alert('Error: ' + e);
-      }
+        try {
+            const res = await fetch(FIND_EMAILS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'manual_trigger', timestamp: new Date().toISOString() })
+            });
+            
+            if (res.ok) {
+                showStatus('✅ Success: Email sync workflow is running!');
+            } else {
+                showStatus('❌ Error: Could not reach sync workflow.', true);
+            }
+        } catch (err) {
+            showStatus('❌ Connection Error: ' + err.message, true);
+        } finally {
+            findEmailsBtn.disabled = false;
+            findEmailsBtn.innerText = '2. Find Emails (Sync)';
+        }
     };
-  </script>
+</script>
+
 </body>
 </html>
