@@ -4,269 +4,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swiss Lead Finder | Pro Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <style>
-        :root {
-            --swiss-red: #D52B1E;
-            --swiss-red-hover: #A91F16;
-            --slate-900: #0f172a;
-            --slate-700: #334155;
-            --slate-100: #f1f5f9;
-            --white: #ffffff;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
-
+        :root { --swiss-red: #D52B1E; --slate-900: #0f172a; --slate-100: #f1f5f9; }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body { 
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: var(--slate-900);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .dashboard {
-            width: 100%;
-            max-width: 850px;
-            background: var(--white);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            padding: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Swiss Accent Bar */
-        .dashboard::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 6px;
-            background: var(--swiss-red);
-        }
-
-        header { text-align: center; margin-bottom: 40px; }
-        header h1 { font-weight: 800; font-size: 2.2rem; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        header p { color: var(--slate-700); margin-top: 8px; font-size: 1.1rem; }
-
-        /* Grid Layout */
-        .task-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-
-        .task-card {
-            background: var(--slate-100);
-            padding: 24px;
-            border-radius: 16px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .task-card:hover { border-color: var(--swiss-red); transform: translateY(-4px); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .task-card.active { border-color: var(--swiss-red); background: #fff; }
-
-        .icon-box { background: var(--swiss-red); color: white; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
-        .task-card h3 { margin: 0 0 8px 0; font-size: 1.25rem; }
-        .task-card p { margin: 0; font-size: 0.9rem; color: var(--slate-700); line-height: 1.4; }
-
-        /* Form Area */
-        #form-section { 
-            max-height: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0;
-            background: var(--slate-100); border-radius: 16px; 
-        }
-        #form-section.open { max-height: 800px; opacity: 1; padding: 30px; margin-top: 10px; }
-
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; color: var(--slate-700); text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        input {
-            width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #cbd5e1; 
-            font-size: 1rem; transition: all 0.2s;
-        }
+        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .dashboard { width: 100%; max-width: 800px; background: white; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 40px; position: relative; border-top: 6px solid var(--swiss-red); }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { margin: 0; font-size: 2rem; color: var(--slate-900); }
+        header p { color: #64748b; margin-top: 5px; }
+        .task-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .card { background: var(--slate-100); padding: 20px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .card:hover, .card.active { border-color: var(--swiss-red); background: white; transform: translateY(-3px); }
+        .icon { background: var(--swiss-red); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .card h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
+        .card p { margin: 0; font-size: 0.85rem; color: #64748b; }
+        #form-section { max-height: 0; overflow: hidden; transition: 0.5s ease-in-out; opacity: 0; }
+        #form-section.open { max-height: 800px; opacity: 1; padding: 25px; background: var(--slate-100); border-radius: 12px; margin-top: 10px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; }
         input:focus { outline: none; border-color: var(--swiss-red); box-shadow: 0 0 0 3px rgba(213, 43, 30, 0.1); }
-
-        .btn-submit {
-            width: 100%; background: var(--swiss-red); color: white; border: none; padding: 16px; 
-            border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-submit:hover { background: var(--swiss-red-hover); }
-        .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
-
-        /* Status Toast */
-        #status-toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-            padding: 16px 32px; border-radius: 100px; color: white; font-weight: 600;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000; box-shadow: var(--shadow);
-        }
-        #status-toast.show { transform: translateX(-50%) translateY(0); }
-
-        @media (max-width: 600px) {
-            .task-grid, .form-row { grid-template-columns: 1fr; }
-            .dashboard { padding: 25px; }
-        }
+        .btn-run { width: 100%; background: var(--swiss-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-run:hover { background: #a91f16; }
+        .btn-run:disabled { background: #94a3b8; cursor: wait; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); padding: 14px 28px; border-radius: 50px; color: white; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-weight: 600; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 1000; }
+        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
 <div class="dashboard">
     <header>
-        <h1><i data-lucide="crosshair"></i> Swiss Lead Finder</h1>
-        <p>Google Maps & Email Enrichment Pipeline</p>
+        <h1>Swiss Lead Finder</h1>
+        <p>Lead Pipeline: Google Maps & Email Sync</p>
     </header>
 
     <div class="task-grid">
-        <div class="task-card" id="card-places">
-            <div class="icon-box"><i data-lucide="map-pin"></i></div>
+        <div class="card" id="places-card">
+            <div class="icon"><i data-lucide="map-pin"></i></div>
             <h3>1. Find Places</h3>
-            <p>Search Google Maps via Outscraper for new business leads.</p>
+            <p>Pull business data from Google Maps</p>
         </div>
-        
-        <div class="task-card" id="btn-sync">
-            <div class="icon-box"><i data-lucide="refresh-cw"></i></div>
+        <div class="card" id="email-sync-btn">
+            <div class="icon"><i data-lucide="refresh-ccw"></i></div>
             <h3>2. Sync Emails</h3>
-            <p>One-click trigger to enrich found places with email data.</p>
+            <p>Run the manual email enrichment</p>
         </div>
     </div>
 
     <div id="form-section">
-        <form id="lead-form">
+        <form id="places-form">
             <div class="input-group">
-                <label>Search Query</label>
-                <input type="text" id="query" placeholder="e.g., Zahnarzt, Einsiedeln, Schweiz" required>
+                <label>Natural Language Query</label>
+                <input type="text" id="q" placeholder="Zahnarzt, Einsiedeln, Schweiz" required>
             </div>
-            
             <div class="input-group">
-                <label>Target Cities</label>
-                <input type="text" id="cities" placeholder="Einsiedeln, Schwyz, Brunnen, Küssnacht" required>
+                <label>Target Cities (Comma Separated)</label>
+                <input type="text" id="c" placeholder="Einsiedeln, Schwyz, Brunnen" required>
             </div>
-
             <div class="input-group">
                 <label>Outscraper API Key</label>
-                <input type="password" id="apiKey" placeholder="••••••••••••••••••••" required>
+                <input type="password" id="k" placeholder="Enter your key" required>
             </div>
-
-            <div class="form-row">
-                <div class="input-group">
-                    <label>Results Limit</label>
-                    <input type="number" id="limit" value="20">
+            <div style="display:flex; gap:15px">
+                <div class="input-group" style="flex:1">
+                    <label>Limit per City</label>
+                    <input type="number" id="l" value="20">
                 </div>
-                <div class="input-group">
-                    <label>Language</label>
-                    <input type="text" id="language" value="de">
+                <div class="input-group" style="flex:1">
+                    <label>Language Code</label>
+                    <input type="text" id="lang" value="de">
                 </div>
             </div>
-
-            <button type="submit" class="btn-submit" id="submit-btn">
-                <i data-lucide="play-circle"></i> Start Extraction
+            <button type="submit" class="btn-run" id="sub-btn">
+                <i data-lucide="send"></i> Dispatch Search
             </button>
         </form>
     </div>
 </div>
 
-<div id="status-toast"></div>
+<div id="toast"></div>
 
 <script>
     // Initialize Icons
     lucide.createIcons();
 
-    // Configuration
-    const URL_PLACES = 'https://crazywebsiteselling.app.n8n.cloud/webhook/outscraper-lead-pipeline';
-    const URL_EMAILS = 'https://crazywebsiteselling.app.n8n.cloud/webhook/trigger-swiss-lead-sync';
+    // Endpoints
+    const PLACES_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/outscraper-lead-pipeline';
+    const EMAILS_URL = 'https://crazywebsiteselling.app.n8n.cloud/webhook/trigger-swiss-lead-sync';
 
-    const cardPlaces = document.getElementById('card-places');
-    const btnSync = document.getElementById('btn-sync');
+    const toast = document.getElementById('toast');
     const formSection = document.getElementById('form-section');
-    const statusToast = document.getElementById('status-toast');
-    const leadForm = document.getElementById('lead-form');
-    const submitBtn = document.getElementById('submit-btn');
+    const placesCard = document.getElementById('places-card');
 
-    function notify(msg, type = 'success') {
-        statusToast.innerText = msg;
-        statusToast.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
-        statusToast.classList.add('show');
-        setTimeout(() => statusToast.classList.remove('show'), 4000);
+    function notify(message, type = 'success') {
+        toast.innerText = message;
+        toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
     }
 
     // Toggle Form
-    cardPlaces.onclick = () => {
+    placesCard.onclick = () => {
         formSection.classList.toggle('open');
-        cardPlaces.classList.toggle('active');
+        placesCard.classList.toggle('active');
     };
 
-    // Action: Sync Emails (One Click)
-    btnSync.onclick = async () => {
-        if(!confirm("Start manual email enrichment sync?")) return;
+    // ACTION 2: EMAIL SYNC
+    document.getElementById('email-sync-btn').onclick = async () => {
+        if(!confirm("Execute manual email enrichment sync?")) return;
         
-        const originalContent = btnSync.innerHTML;
-        btnSync.style.opacity = "0.6";
-        btnSync.style.pointerEvents = "none";
-        
+        notify("Contacting n8n...");
         try {
-            const res = await fetch(URL_EMAILS, {
+            const response = await fetch(EMAILS_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ trigger: 'dashboard_manual' })
+                // Mode 'no-cors' is a last-resort if CORS is not set in n8n, 
+                // but 'cors' is preferred for proper status reporting.
+                mode: 'cors', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'manual_sync_trigger', date: new Date().toISOString() })
             });
-            if(res.ok) notify("✅ Sync Workflow Triggered!");
-            else notify("❌ Sync Failed", "error");
-        } catch (e) {
-            notify("❌ Connection Error", "error");
-        } finally {
-            btnSync.style.opacity = "1";
-            btnSync.style.pointerEvents = "auto";
+            
+            if(response.ok) {
+                notify("✅ Enrichment Started!");
+            } else {
+                notify("❌ Server Error: Check n8n CORS settings", "error");
+            }
+        } catch(e) {
+            console.error(e);
+            notify("❌ Connection Error: Check CORS in n8n", "error");
         }
     };
 
-    // Action: Submit Form
-    leadForm.onsubmit = async (e) => {
+    // ACTION 1: PLACES FORM
+    document.getElementById('places-form').onsubmit = async (e) => {
         e.preventDefault();
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i data-lucide="loader" class="spin"></i> Processing...`;
-        lucide.createIcons();
-
+        const btn = document.getElementById('sub-btn');
+        
+        // Prepare Payload
         const payload = {
-            query: document.getElementById('query').value,
-            cities: document.getElementById('cities').value,
-            outscraper_api_key: document.getElementById('apiKey').value,
-            limit_per_city: parseInt(document.getElementById('limit').value),
-            language: document.getElementById('language').value
+            query: document.getElementById('q').value,
+            cities: document.getElementById('c').value,
+            outscraper_api_key: document.getElementById('k').value,
+            limit_per_city: parseInt(document.getElementById('l').value),
+            language: document.getElementById('lang').value
         };
 
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Processing...';
+        
         try {
-            const res = await fetch(URL_PLACES, {
+            const response = await fetch(PLACES_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
-            if(res.ok) {
-                notify("🚀 Search Started Successfully!");
+
+            if(response.ok) {
+                notify("🚀 Maps Extraction Triggered!");
+                document.getElementById('places-form').reset();
                 formSection.classList.remove('open');
-                cardPlaces.classList.remove('active');
-                leadForm.reset();
+                placesCard.classList.remove('active');
             } else {
-                notify("❌ Error starting search", "error");
+                notify("❌ Workflow Error: Check n8n logs", "error");
             }
-        } catch (e) {
-            notify("❌ Network Error", "error");
+        } catch(e) {
+            console.error(e);
+            notify("❌ Connection Error: Is CORS enabled?", "error");
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i data-lucide="play-circle"></i> Start Extraction`;
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="send"></i> Dispatch Search';
             lucide.createIcons();
         }
     };
 </script>
 
 <style>
-    /* Spinner Animation */
+    /* Utility for the loading spinner */
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .spin { animation: spin 1s linear infinite; }
 </style>
